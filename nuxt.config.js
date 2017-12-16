@@ -1,16 +1,15 @@
 'use strict'
 
+const path = require('path')
 const { ENV } = require('./configs/env')
 
 module.exports = {
   srcDir: 'app',
-
   router: {
-    base: ENV.BASE_URL
+    base: ENV.BASE_URL,
   },
-
   render: {
-    gzip: false
+    gzip: false,
   },
 
   /*
@@ -21,11 +20,9 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Nuxt.js project' }
+      { hid: 'description', name: 'description', content: 'Nuxt.js project' },
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
   /*
   ** Customize the progress bar color
@@ -44,9 +41,21 @@ module.exports = {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules)/
+          exclude: /(node_modules)/,
         })
       }
-    }
-  }
+      config.module.rules
+        .find((rule) => rule.loader === 'vue-loader')
+        .options.loaders.scss.push({
+          loader: 'sass-resources-loader',
+          options: {
+            resources: [
+              path.join(__dirname, 'app/assets/scss/_variables.scss'),
+              path.join(__dirname, 'app/assets/scss/_mixin.scss'),
+            ],
+          },
+        })
+    },
+  },
+  css: ['normalize.css/normalize.css', '~assets/scss/styles.scss'],
 }
